@@ -20,10 +20,8 @@ public class MemoryFiles : Files
     public Task Write(Stream stream, string path)
     {
         using var memoryStream = new MemoryStream();
-        {
-            stream.CopyTo(memoryStream);
-            Files[path] = memoryStream.ToArray();
-        }
+        stream.CopyTo(memoryStream);
+        Files[path] = memoryStream.ToArray();
         return Task.CompletedTask;
     }
 
