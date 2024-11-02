@@ -15,3 +15,8 @@ jobs:
       uses: actions/checkout@v2
     - name: Run tests
       run: dotnet test Library.sln
+      env:
+        FilesAccessKeyId: ${{ secrets.FilesAccessKeyId }}
+        FilesSecretAccessKey: ${{ secrets.FilesSecretAccessKey }}
+        FilesRegion: ${{ secrets.FilesRegion }}
+        FilesBucketName: ${{ secrets.FilesBucketName }}

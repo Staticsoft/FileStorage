@@ -26,7 +26,9 @@
 
     <ItemGroup>
         <ProjectReference Include="..\FileStorage.Abstractions\FileStorage.Abstractions.csproj" />
+        <ProjectReference Include="..\FileStorage.Local\FileStorage.Local.csproj" />
         <ProjectReference Include="..\FileStorage.Memory\FileStorage.Memory.csproj" />
+        <ProjectReference Include="..\FileStorage.S3\FileStorage.S3.csproj" />
     </ItemGroup>
 
 </Project>
