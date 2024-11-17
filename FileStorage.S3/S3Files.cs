@@ -54,4 +54,22 @@ public class S3Files(
 
         await S3.DeleteObjectAsync(new() { BucketName = Options.BucketName, Key = path });
     }
+
+    public Task<string> WriteLink(string path)
+        => S3.GetPreSignedURLAsync(new()
+        {
+            BucketName = Options.BucketName,
+            Key = path,
+            Verb = HttpVerb.PUT,
+            Expires = DateTime.UtcNow.AddHours(1)
+        });
+
+    public Task<string> ReadLink(string path)
+        => S3.GetPreSignedURLAsync(new()
+        {
+            BucketName = Options.BucketName,
+            Key = path,
+            Verb = HttpVerb.GET,
+            Expires = DateTime.UtcNow.AddHours(1)
+        });
 }

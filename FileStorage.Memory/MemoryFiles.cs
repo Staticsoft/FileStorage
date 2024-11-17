@@ -17,12 +17,11 @@ public class MemoryFiles : Files
         ? bytes
         : throw new FileNotFoundException(path);
 
-    public Task Write(Stream stream, string path)
+    public async Task Write(Stream stream, string path)
     {
         using var memoryStream = new MemoryStream();
-        stream.CopyTo(memoryStream);
+        await stream.CopyToAsync(memoryStream);
         Files[path] = memoryStream.ToArray();
-        return Task.CompletedTask;
     }
 
     public Task Delete(string path)
@@ -30,4 +29,10 @@ public class MemoryFiles : Files
         if (!Files.Remove(path)) throw new FileNotFoundException(path);
         return Task.CompletedTask;
     }
+
+    public Task<string> WriteLink(string path)
+        => Task.FromResult($"/FileServer/{path}");
+
+    public Task<string> ReadLink(string path)
+        => Task.FromResult($"/FileServer/{path}");
 }

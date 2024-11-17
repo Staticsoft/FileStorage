@@ -9,4 +9,8 @@ public interface Files
     Task Write(Stream stream, string path);
 
     Task Delete(string path);
+
+    Task<string> WriteLink(string path);
+
+    Task<string> ReadLink(string path);
 }
