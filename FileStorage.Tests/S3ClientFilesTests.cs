@@ -5,9 +5,27 @@ using Staticsoft.FileStorage.S3;
 
 namespace Staticsoft.FileStorage.Tests;
 
-public class S3FilesTests : FilesTests
+public class S3ClientFilesTests : ClientFilesTests
 {
-    protected override IServiceCollection Services => base.Services
+    protected override IServiceCollection Services
+        => base.Services
+            .UseS3();
+}
+
+public class S3ServerFilesTests : ServerFilesTests
+{
+    protected override IServiceCollection ServerServices(IServiceCollection services)
+        => base.ServerServices(services)
+            .UseS3();
+
+    protected override IServiceCollection ClientServices(IServiceCollection services)
+        => base.ClientServices(services)
+            .AddSingleton<HttpClient>();
+}
+
+public static class S3Services
+{
+    public static IServiceCollection UseS3(this IServiceCollection services) => services
         .UseS3Files(
             _ => new AmazonS3Client(GetAccessKeyId(), GetSecretAccessKey(), GetRegion()),
             _ => new S3FilesOptions() { BucketName = GetBucketName() }

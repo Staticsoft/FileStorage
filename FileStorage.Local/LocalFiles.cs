@@ -48,4 +48,10 @@ public class LocalFiles(
 
     string ToFilePath(string path)
         => Path.Combine(Options.BasePath, path);
+
+    public Task<string> WriteLink(string path)
+        => Task.FromResult($"/FileServer/{path}");
+
+    public Task<string> ReadLink(string path)
+        => Task.FromResult($"/FileServer/{path}");
 }

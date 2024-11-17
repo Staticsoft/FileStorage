@@ -5,7 +5,7 @@ using Xunit;
 
 namespace Staticsoft.FileStorage.Tests;
 
-public abstract class FilesTests : TestBase<Files>, IAsyncLifetime
+public abstract class ClientFilesTests : TestBase<Files>, IAsyncLifetime
 {
     const string NonExistingFile = "NonExisting";
     const string ExistingFile = "ExistingFile";

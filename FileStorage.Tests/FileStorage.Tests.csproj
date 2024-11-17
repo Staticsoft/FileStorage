@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
         <TargetFramework>net8.0</TargetFramework>
@@ -10,6 +10,7 @@
     </PropertyGroup>
 
     <ItemGroup>
+        <PackageReference Include="Staticsoft.Testing.Integration" Version="1.0.0-10" />
         <PackageReference Include="Staticsoft.Testing.Unit" Version="1.0.0-10" />
         <PackageReference Include="Staticsoft.Extensions.DependencyInjection" Version="1.0.0-3" />
         <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.11.0" />
@@ -29,6 +30,7 @@
         <ProjectReference Include="..\FileStorage.Local\FileStorage.Local.csproj" />
         <ProjectReference Include="..\FileStorage.Memory\FileStorage.Memory.csproj" />
         <ProjectReference Include="..\FileStorage.S3\FileStorage.S3.csproj" />
+        <ProjectReference Include="..\TestServer\TestServer.csproj" />
     </ItemGroup>
 
 </Project>
