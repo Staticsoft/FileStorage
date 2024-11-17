@@ -11,5 +11,6 @@ public interface Files
     Task Delete(string path);
 
     Task<string> WriteLink(string path);
+
     Task<string> ReadLink(string path);
 }
