@@ -20,7 +20,10 @@ public static class FileServerEndpoints
             string path
         ) =>
         {
-            context.Features.Get<IHttpMaxRequestBodySizeFeature>()!.MaxRequestBodySize = MaxFileSize;
+            if (context.Features.Get<IHttpMaxRequestBodySizeFeature>() is IHttpMaxRequestBodySizeFeature feature)
+            {
+                feature.MaxRequestBodySize = MaxFileSize;
+            }
 
             return files.Write(request.Body, path);
         });
