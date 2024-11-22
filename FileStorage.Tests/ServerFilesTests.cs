@@ -8,8 +8,8 @@ namespace Staticsoft.FileStorage.Tests;
 
 public abstract class ServerFilesTests : IntegrationTestBase<TestStartup>
 {
-    const string UploadedFile = "UploadedFile";
-    const string DownloadedFile = "DownloadedFile";
+    const string UploadedFile = "Uploads/File";
+    const string DownloadedFile = "Downloads/File";
 
     Files SUT
         => Server<Files>();
