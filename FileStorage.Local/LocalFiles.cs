@@ -37,6 +37,20 @@ public class LocalFiles(
         await stream.CopyToAsync(writeStream);
     }
 
+    public Task Move(string currentPath, string newPath)
+    {
+        var currentFilePath = ToFilePath(currentPath);
+        var newFilePath = ToFilePath(newPath);
+
+        if (!File.Exists(currentFilePath)) throw new FileNotFoundException(currentPath);
+
+        Directory.CreateDirectory(Path.GetDirectoryName(newFilePath)!);
+
+        File.Move(currentFilePath, newFilePath, overwrite: true);
+
+        return Task.CompletedTask;
+    }
+
     public Task Delete(string path)
     {
         var filePath = ToFilePath(path);

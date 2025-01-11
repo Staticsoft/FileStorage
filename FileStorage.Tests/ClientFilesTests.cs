@@ -9,6 +9,7 @@ public abstract class ClientFilesTests : TestBase<Files>, IAsyncLifetime
 {
     const string NonExistingFile = "NonExisting";
     const string ExistingFile = "ExistingFile";
+    const string NewLocation = "NewLocation";
 
     public async Task InitializeAsync()
     {
@@ -92,5 +93,52 @@ public abstract class ClientFilesTests : TestBase<Files>, IAsyncLifetime
 
         var files = await SUT.List();
         Assert.Empty(files);
+    }
+
+    [Fact]
+    public async Task ThrowsNotFoundExceptionWhenMovingNonExistingFile()
+    {
+        await Assert.ThrowsAsync<FileNotFoundException>(() => SUT.Move(NonExistingFile, NewLocation));
+    }
+
+    [Fact]
+    public async Task MovesFileFromOneLocationToAnother()
+    {
+        var randomBytes = RandomNumberGenerator.GetBytes(1024);
+        using var writeStream = new MemoryStream(randomBytes);
+        await SUT.Write(writeStream, ExistingFile);
+
+        await SUT.Move(ExistingFile, NewLocation);
+
+        using var readStream = await SUT.Read(NewLocation);
+        using var memoryStream = new MemoryStream();
+        await readStream.CopyToAsync(memoryStream);
+
+        Assert.Equal(randomBytes, memoryStream.ToArray());
+
+        var files = await SUT.List();
+        Assert.Single(files);
+        var file = files.Single();
+        Assert.Equal(NewLocation, file);
+    }
+
+    [Fact]
+    public async Task OverwritesExistingFileWhenFileIsMoved()
+    {
+        var firstRandomBytes = RandomNumberGenerator.GetBytes(1024);
+        using var firstWriteStream = new MemoryStream(firstRandomBytes);
+        await SUT.Write(firstWriteStream, ExistingFile);
+
+        var secondRandomBytes = RandomNumberGenerator.GetBytes(1024);
+        using var secondWriteStream = new MemoryStream(secondRandomBytes);
+        await SUT.Write(secondWriteStream, NewLocation);
+
+        await SUT.Move(ExistingFile, NewLocation);
+
+        using var readStream = await SUT.Read(NewLocation);
+        using var memoryStream = new MemoryStream();
+        await readStream.CopyToAsync(memoryStream);
+
+        Assert.Equal(firstRandomBytes, memoryStream.ToArray());
     }
 }

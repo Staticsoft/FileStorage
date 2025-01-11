@@ -1,4 +1,5 @@
 ﻿using Amazon.S3;
+using Amazon.S3.Model;
 using Staticsoft.FileStorage.Abstractions;
 using System.Net;
 
@@ -39,6 +40,28 @@ public class S3Files(
     public async Task Write(Stream stream, string path)
     {
         await S3.PutObjectAsync(new() { BucketName = Options.BucketName, Key = path, InputStream = stream });
+    }
+
+    public async Task Move(string currentPath, string newPath)
+    {
+        try
+        {
+            await S3.GetObjectMetadataAsync(Options.BucketName, currentPath);
+        }
+        catch (AmazonS3Exception ex) when (ex.StatusCode == HttpStatusCode.NotFound)
+        {
+            throw new FileNotFoundException(currentPath);
+        }
+
+        await S3.CopyObjectAsync(new CopyObjectRequest
+        {
+            SourceBucket = Options.BucketName,
+            SourceKey = currentPath,
+            DestinationBucket = Options.BucketName,
+            DestinationKey = newPath
+        });
+
+        await Delete(currentPath);
     }
 
     public async Task Delete(string path)
