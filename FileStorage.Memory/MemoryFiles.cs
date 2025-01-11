@@ -24,6 +24,16 @@ public class MemoryFiles : Files
         Files[path] = memoryStream.ToArray();
     }
 
+    public Task Move(string currentPath, string newPath)
+    {
+        if (!Files.TryGetValue(currentPath, out var bytes)) throw new FileNotFoundException(currentPath);
+
+        Files[newPath] = bytes;
+        Files.Remove(currentPath);
+
+        return Task.CompletedTask;
+    }
+
     public Task Delete(string path)
     {
         if (!Files.Remove(path)) throw new FileNotFoundException(path);

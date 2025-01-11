@@ -8,6 +8,8 @@ public interface Files
 
     Task Write(Stream stream, string path);
 
+    Task Move(string currentPath, string newPath);
+
     Task Delete(string path);
 
     Task<string> WriteLink(string path);
