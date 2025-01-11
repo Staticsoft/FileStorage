@@ -121,4 +121,24 @@ public abstract class ClientFilesTests : TestBase<Files>, IAsyncLifetime
         var file = files.Single();
         Assert.Equal(NewLocation, file);
     }
+
+    [Fact]
+    public async Task OverwritesExistingFileWhenFileIsMoved()
+    {
+        var firstRandomBytes = RandomNumberGenerator.GetBytes(1024);
+        using var firstWriteStream = new MemoryStream(firstRandomBytes);
+        await SUT.Write(firstWriteStream, ExistingFile);
+
+        var secondRandomBytes = RandomNumberGenerator.GetBytes(1024);
+        using var secondWriteStream = new MemoryStream(secondRandomBytes);
+        await SUT.Write(secondWriteStream, NewLocation);
+
+        await SUT.Move(ExistingFile, NewLocation);
+
+        using var readStream = await SUT.Read(NewLocation);
+        using var memoryStream = new MemoryStream();
+        await readStream.CopyToAsync(memoryStream);
+
+        Assert.Equal(firstRandomBytes, memoryStream.ToArray());
+    }
 }

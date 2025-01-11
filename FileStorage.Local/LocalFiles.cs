@@ -46,7 +46,7 @@ public class LocalFiles(
 
         Directory.CreateDirectory(Path.GetDirectoryName(newFilePath)!);
 
-        File.Move(currentFilePath, newFilePath);
+        File.Move(currentFilePath, newFilePath, overwrite: true);
 
         return Task.CompletedTask;
     }
