@@ -141,4 +141,21 @@ public abstract class ClientFilesTests : TestBase<Files>, IAsyncLifetime
 
         Assert.Equal(firstRandomBytes, memoryStream.ToArray());
     }
+
+    [Fact]
+    public async Task WritesContentOfUnknownLength()
+    {
+        var randomBytes = RandomNumberGenerator.GetBytes(1024);
+        using var memoryWriteStream = new MemoryStream(randomBytes);
+        await SUT.Write(memoryWriteStream, ExistingFile);
+
+        using var readStream = await SUT.Read(ExistingFile);
+        await SUT.Write(readStream, NewLocation);
+
+        using var verification = await SUT.Read(NewLocation);
+        using var memoryStream = new MemoryStream();
+        await verification.CopyToAsync(memoryStream);
+
+        Assert.Equal(randomBytes, memoryStream.ToArray());
+    }
 }
