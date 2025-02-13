@@ -1,5 +1,6 @@
 ﻿using Amazon;
 using Amazon.S3;
+using Amazon.S3.Transfer;
 using Microsoft.Extensions.DependencyInjection;
 using Staticsoft.FileStorage.S3;
 
@@ -28,6 +29,7 @@ public static class S3Services
     public static IServiceCollection UseS3(this IServiceCollection services) => services
         .UseS3Files(
             _ => new AmazonS3Client(GetAccessKeyId(), GetSecretAccessKey(), GetRegion()),
+            _ => new TransferUtility(GetAccessKeyId(), GetSecretAccessKey(), GetRegion()),
             _ => new S3FilesOptions() { BucketName = GetBucketName() }
         );
 

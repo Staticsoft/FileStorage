@@ -1,5 +1,6 @@
 ﻿using Amazon.S3;
 using Amazon.S3.Model;
+using Amazon.S3.Transfer;
 using Staticsoft.FileStorage.Abstractions;
 using System.Net;
 
@@ -12,10 +13,12 @@ public class S3FilesOptions
 
 public class S3Files(
     AmazonS3Client s3,
+    TransferUtility transfer,
     S3FilesOptions options
 ) : Files
 {
     readonly AmazonS3Client S3 = s3;
+    readonly TransferUtility Transfer = transfer;
     readonly S3FilesOptions Options = options;
 
     public async Task<string[]> List()
@@ -39,7 +42,7 @@ public class S3Files(
 
     public async Task Write(Stream stream, string path)
     {
-        await S3.PutObjectAsync(new() { BucketName = Options.BucketName, Key = path, InputStream = stream });
+        await Transfer.UploadAsync(stream, Options.BucketName, path);
     }
 
     public async Task Move(string currentPath, string newPath)
