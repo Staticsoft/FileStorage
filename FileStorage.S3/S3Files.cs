@@ -31,13 +31,14 @@ public class S3Files(
     {
         try
         {
-            var response = await S3.GetObjectAsync(new() { BucketName = Options.BucketName, Key = path });
-            return response.ResponseStream;
+            await S3.GetObjectMetadataAsync(Options.BucketName, path);
         }
         catch (AmazonS3Exception ex) when (ex.StatusCode == HttpStatusCode.NotFound)
         {
             throw new FileNotFoundException(path);
         }
+
+        return await Transfer.OpenStreamAsync(Options.BucketName, path);
     }
 
     public async Task Write(Stream stream, string path)
