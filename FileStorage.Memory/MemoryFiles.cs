@@ -6,8 +6,8 @@ public class MemoryFiles : Files
 {
     readonly Dictionary<string, byte[]> Files = [];
 
-    public Task<string[]> List()
-        => Task.FromResult(Files.Keys.ToArray());
+    public Task<string[]> List(string pathPrefix)
+        => Task.FromResult(Files.Keys.Where(file => file.StartsWith(pathPrefix)).ToArray());
 
     public Task<Stream> Read(string path)
         => Task.FromResult((Stream)new MemoryStream(ReadFile(path)));

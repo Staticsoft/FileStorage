@@ -2,7 +2,10 @@
 
 public interface Files
 {
-    Task<string[]> List();
+    Task<string[]> List()
+        => List(string.Empty);
+
+    Task<string[]> List(string pathPrefix);
 
     Task<Stream> Read(string path);
 

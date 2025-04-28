@@ -14,17 +14,22 @@ public class LocalFiles(
     readonly LocalFilesOptions Options = options;
     readonly int RelativeIndex = $"{options.BasePath}{Path.DirectorySeparatorChar}".Length;
 
-    public Task<string[]> List()
-        => Task.FromResult(ListFiles());
+    public Task<string[]> List(string pathPrefix)
+        => Task.FromResult(ListFiles(pathPrefix));
 
-    string[] ListFiles()
+    string[] ListFiles(string pathPrefix)
         => Directory
             .GetFiles(Options.BasePath, "*", SearchOption.AllDirectories)
             .Select(ToRelativePath)
+            .Select(ToConsistentPathSeparator)
+            .Where(file => file.StartsWith(pathPrefix))
             .ToArray();
 
     string ToRelativePath(string filePath)
         => filePath[RelativeIndex..];
+
+    string ToConsistentPathSeparator(string filePath)
+        => filePath.Replace('\\', '/');
 
     public Task<Stream> Read(string path)
         => Task.FromResult((Stream)File.OpenRead(ToFilePath(path)));

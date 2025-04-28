@@ -77,6 +77,31 @@ public abstract class ClientFilesTests : TestBase<Files>, IAsyncLifetime
     }
 
     [Fact]
+    public async Task ReturnsEmptyListOfFilesIfPrefixIsNotMatching()
+    {
+        var randomBytes = RandomNumberGenerator.GetBytes(1024);
+        using var writeStream = new MemoryStream(randomBytes);
+        await SUT.Write(writeStream, ExistingFile);
+
+        var files = await SUT.List(NonExistingFile);
+        Assert.Empty(files);
+    }
+
+    [Fact]
+    public async Task ReturnsNonEmptyListOfFilesIfPrefixIsMatching()
+    {
+        var prefix = "Prefix";
+        var fileName = $"{prefix}/{ExistingFile}";
+
+        var randomBytes = RandomNumberGenerator.GetBytes(1024);
+        using var writeStream = new MemoryStream(randomBytes);
+        await SUT.Write(writeStream, fileName);
+
+        var files = await SUT.List(prefix);
+        Assert.Equal([fileName], files);
+    }
+
+    [Fact]
     public async Task ThrowsNotFoundExceptionWhenDeletingNonExistingFile()
     {
         await Assert.ThrowsAsync<FileNotFoundException>(() => SUT.Delete(NonExistingFile));

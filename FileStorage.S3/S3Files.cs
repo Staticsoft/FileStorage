@@ -21,9 +21,9 @@ public class S3Files(
     readonly TransferUtility Transfer = transfer;
     readonly S3FilesOptions Options = options;
 
-    public async Task<string[]> List()
+    public async Task<string[]> List(string pathPrefix)
     {
-        var response = await S3.ListObjectsAsync(Options.BucketName);
+        var response = await S3.ListObjectsAsync(Options.BucketName, pathPrefix);
         return response.S3Objects.Select(s3Object => s3Object.Key).ToArray();
     }
 
