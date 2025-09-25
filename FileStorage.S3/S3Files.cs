@@ -9,6 +9,8 @@ namespace Staticsoft.FileStorage.S3;
 public class S3FilesOptions
 {
     public required string BucketName { get; init; }
+    public TimeSpan ReadLinkExpiration { get; init; } = TimeSpan.FromHours(1);
+    public TimeSpan WriteLinkExpiration { get; init; } = TimeSpan.FromHours(1);
 }
 
 public class S3Files(
@@ -88,7 +90,7 @@ public class S3Files(
             BucketName = Options.BucketName,
             Key = path,
             Verb = HttpVerb.PUT,
-            Expires = DateTime.UtcNow.AddHours(1)
+            Expires = DateTime.UtcNow + Options.WriteLinkExpiration
         });
 
     public Task<string> ReadLink(string path)
@@ -97,6 +99,6 @@ public class S3Files(
             BucketName = Options.BucketName,
             Key = path,
             Verb = HttpVerb.GET,
-            Expires = DateTime.UtcNow.AddHours(1)
+            Expires = DateTime.UtcNow + Options.ReadLinkExpiration
         });
 }
